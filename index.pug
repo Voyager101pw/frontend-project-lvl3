@@ -1,0 +1,21 @@
+doctype 
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title RSS-агрегатор
+  body
+    main.flex
+      section.container-fluid.bg-dark.p-5 
+        .row
+          .col-md-10.col-lg-8.mx-auto.text-white
+            h1.mb-0.display-3 RSS агрегатор
+            p.lead Начните читать RSS сегодня! Это легко, это красиво.
+            form(action='')
+              .row 
+                .col
+                  .form-floating
+                  input.form-control(placeholder='Ссылка RSS')
+                .col-auto
+                  button.btn.btn-primary Добавить
+            p.text-muted.mt-2 Пример:  ....
