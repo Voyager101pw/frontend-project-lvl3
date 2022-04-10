@@ -11,11 +11,12 @@ html(lang='en')
           .col-md-10.col-lg-8.mx-auto.text-white
             h1.mb-0.display-3 RSS агрегатор
             p.lead Начните читать RSS сегодня! Это легко, это красиво.
-            form(action='')
+            form(id='form')
               .row 
                 .col
                   .form-floating
-                  input.form-control(placeholder='Ссылка RSS')
+                  input.form-control(placeholder='Ссылка RSS', id='input', autofocus required)
                 .col-auto
-                  button.btn.btn-primary Добавить
-            p.text-muted.mt-2 Пример: https://frontend-project-lvl3-steel-eta.vercel.app/
+                  button.btn.btn-primary(id='add', type='submit') Добавить
+            p.text-muted.mt-2.mb-0 Пример: https://frontend-project-lvl3-steel-eta.vercel.app/
+            p.small.mb-0.text-danger.position-absolute#feedback
