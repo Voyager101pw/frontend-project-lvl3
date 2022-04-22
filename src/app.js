@@ -1,35 +1,39 @@
+/* eslint-disable no-undef */
+import i18next from 'i18next';
 import onChange from 'on-change';
-import initValidator from './initValidator.js';
-import renderView from './renderView.js';
+import view from './view.js';
+import resources from './locale/index.js';
+import Validator from './Validator.js';
+import controllerLogic from './asyncLogic/controllerLogic.js';
 
-const formElements = {
-  // eslint-disable-next-line no-undef
+const elements = { // Для исключения повторного поиска элемента в dom (optimization).
   form: document.getElementById('form'),
-  // eslint-disable-next-line no-undef
   input: document.getElementById('input'),
-  // eslint-disable-next-line no-undef
   feedback: document.getElementById('feedback'),
 };
 
-const initState = () => {
-  const state = {
-    lng: 'ru',
-    links: [],
-    error: {},
-  };
-  const watchedState = onChange(state, renderView(state, formElements), { ignoreKeys: 'links' });
-  return watchedState;
+// Модель — этот компонент отвечает за данные, а также определяет структуру приложения
+const state = { // state определяет модель
+  lng: 'ru',
+  feeds: [],
+  posts: [],
+  urls: [],
+  error: null,
 };
 
+i18next.init({
+  lng: state.lng,
+  resources,
+});
+
+const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
+const validator = new Validator(state);
+
 const app = () => {
-  const state = initState();
-
-  const validator = initValidator(state, formElements);
-
-  formElements.form.addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => { // Controller
     e.preventDefault();
-    const textFromInput = e.target.input.value;
-    validator.validate(textFromInput); // Выполняет обязанности контроллера
+    const input = e.target.input.value;
+    controllerLogic(watchedState, validator, input); // async. controller logic
   });
 };
 
