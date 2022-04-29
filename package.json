@@ -2,7 +2,6 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "main": "dist/index.html",
-  "type": "module",
   "description": "[![Actions Status](https://github.com/Voyager101pw/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Voyager101pw/frontend-project-lvl3/actions)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
