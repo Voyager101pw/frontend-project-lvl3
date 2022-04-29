@@ -1,106 +1,93 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-param-reassign */
+import axios from 'axios';
+import validator from './validator.js';
+import parser from './parser.js';
 
-const addElm = (elm) => document.createElement(elm);
-const addCls = (elm, ...classes) => elm.classList.add(...classes);
+const makeRequest = (url) => {
+  const uri = encodeURIComponent(url);
+  const proxy = `https://allorigins.hexlet.app/get?disableCache=true&url=${uri}`;
 
-const createContainer = (container, i18next) => {
-  const card = document.createElement('div');
-  const ul = document.createElement('ul');
-  const title = addElm('h2');
-
-  addCls(card, 'card', 'border-0');
-  addCls(title, 'card-title', 'h4', 'px-3', 'py-3');
-  addCls(ul, 'list-group', 'border-0', 'rounded-0');
-
-  title.textContent = container.id === 'posts'
-    ? i18next.t('cards.posts')
-    : i18next.t('cards.feeds');
-  card.append(title, ul);
-  container.appendChild(card);
+  return axios.get(proxy)
+    .then(({ data }) => data.contents)
+    .catch(() => { throw Error('errors.request'); });
 };
 
-const renderPosts = (container, state, i18next) => {
-  const { posts } = state;
-  const ulChildren = posts.map(({ id, title, wasRead }) => {
-    const [a, button, li] = [addElm('a'), addElm('button'), addElm('li')];
-    addCls(a, (wasRead ? 'fw-normal' : 'fw-bold'));
-    addCls(button, 'btn', 'btn-outline-primary', 'btn-sm');
-    addCls(li, 'list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0');
-
-    a.href = '#';
-    a.textContent = title;
-    button.textContent = i18next.t('cards.button');
-    button.setAttribute('type', 'button');
-    button.dataset.id = id;
-    button.dataset.bsToggle = 'modal';
-    button.dataset.bsTarget = '#modal';
-    li.append(a, button);
-    return li;
-  });
-  container.querySelector('ul').replaceChildren(...ulChildren);
+const updateState = (state, url, parsedData) => {
+  const { receivedFeed, receivedPosts } = parsedData;
+  state.feeds = [...state.feeds, receivedFeed];
+  state.posts = [...state.posts, ...receivedPosts];
+  state.urls = [...state.urls, url];
+  state.error = false;
+  return url;
 };
 
-const renderFeeds = (container, state) => {
-  const { feeds } = state;
-  const ulChildren = feeds.map((feed) => {
-    const { title, description } = feed;
-    const li = addElm('li');
-
-    li.append(addElm('h3'), addElm('p'));
-    const [h3, p] = li.childNodes;
-
-    addCls(li, 'list-group-item', 'border-0');
-    addCls(h3, 'h6', 'm-0');
-    addCls(p, 'text-muted', 'small');
-
-    h3.textContent = title;
-    p.textContent = description;
-
-    return li;
-  });
-  container.querySelector('ul').replaceChildren(...ulChildren);
-};
-
-const applayLocale = (i18next) => {
-  document.querySelector('h1').textContent = i18next.t('trans.title');
-  document.querySelector('.lead').textContent = i18next.t('trans.subTitle');
-  document.querySelector('label').textContent = i18next.t('trans.label');
-  document.getElementById('add').textContent = i18next.t('trans.button');
-  document.querySelector('p.text-muted').textContent = i18next.t('trans.example');
-  document.querySelector('a.btn').textContent = i18next.t('modal.read');
-  document.querySelector('button.btn-secondary').textContent = i18next.t('modal.close');
-};
-
-// Представление — этот компонент отвечает за взаимодействие с пользователем.
-// То есть код компонента view определяет внешний вид приложения и способы его использования.
-const view = (state, elements, i18next) => {
-  applayLocale(i18next);
-  if (state.error) {
-    addCls(input, 'is-invalid');
-    feedback.classList.replace('text-success', 'text-danger');
-    feedback.textContent = i18next.t(state.error);
-    input.focus();
-    return;
+const getIds = (posts) => posts.map(({ id }) => id);
+const extractUpdatedPosts = (state, { receivedPosts }) => {
+  const oldPosts = state.posts;
+  const [receivedIds, oldIds] = [receivedPosts, oldPosts].map(getIds);
+  const newIds = receivedIds.filter(
+    (receivedId) => !oldIds.includes(receivedId),
+  );
+  if (newIds.length) {
+    const newPosts = receivedPosts.filter(({ id }) => newIds.includes(id));
+    state.posts = [...state.posts, ...newPosts];
   }
-  if ([...feedback.classList].includes('text-danger')) {
-    feedback.textContent = i18next.t('success');
-    feedback.classList.replace('text-danger', 'text-success');
-    input.classList.remove('is-invalid');
-    input.value = '';
-    input.focus();
-  }
+};
 
-  const postsNode = document.getElementById('posts');
-  const feedsNode = document.getElementById('feeds');
+// Делегируем оброботку события одному ul, а не каждому li элементам
+const addUlListener = (state) => () => {
+  const ul = document.getElementById('posts').querySelector('ul');
+  ul.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON') return;
+    const btn = e.target;
+    const selectedId = btn.getAttribute('data-id');
+    state.openPost = selectedId;
+    const selectedPost = state.posts.filter(({ id }) => id === selectedId);
+    selectedPost[0].wasRead = true;
+    const { title, description, url } = selectedPost[0]; // [0] Из-за proxy
 
-  [postsNode, feedsNode].forEach((node) => {
-    if (!node.hasChildNodes()) createContainer(node, i18next);
+    const modal = document.getElementById('modal');
+    const [modalTitle, modalContent] = [
+      modal.querySelector('.modal-title'),
+      modal.querySelector('#modal-content'),
+    ];
+    const a = modal.querySelector('a');
+    a.href = url;
+    modalTitle.textContent = title;
+    modalContent.textContent = description;
   });
+};
 
-  const postContainer = postsNode.querySelector('div.card');
-  const feedContainer = feedsNode.querySelector('div.card');
-  renderPosts(postContainer, state, i18next);
-  renderFeeds(feedContainer, state);
+const formBlocked = (state) => { state.readonly = true; };
+const formUnlocked = (state, res) => {
+  state.readonly = false;
+  return res;
+};
+
+const observUpdate = (state, url) => Promise.resolve(url)
+  .then(() => makeRequest(url))
+  .then(parser)
+  .then((parsedData) => extractUpdatedPosts(state, parsedData))
+  .then(setTimeout(() => observUpdate(state, url), 5000));
+
+const view = (state, elms, i18next) => {
+  elms.form.addEventListener('submit', async (e) => {
+    const url = elms.input.value;
+    e.preventDefault();
+    validator(state)
+      .validate(url)
+      .then(() => formBlocked(state))
+      .then(() => makeRequest(url))
+      .then((res) => formUnlocked(state, res))
+      .then(parser)
+      .then((parsedData) => updateState(state, url, parsedData))
+      .then(addUlListener(state))
+      .then(setTimeout(() => observUpdate(state, url), 5000))
+      .catch((err) => {
+        state.error = i18next.t(err.message);
+      });
+  });
 };
 
 export default view;

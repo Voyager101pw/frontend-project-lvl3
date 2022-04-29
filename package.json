@@ -2,10 +2,14 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Voyager101pw/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Voyager101pw/frontend-project-lvl3/actions)",
+  "private": true,
+  "main": "src/app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "serve": "webpack-dev-server --mode development"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "dev": "webpack --node-env development",
+    "prod": "webpack --node-env production",
+    "server": "webpack-dev-server --mode development"
   },
   "repository": {
     "type": "git",
@@ -25,13 +29,18 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.13.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/user-event": "^14.1.1",
     "@webdiscus/pug-loader": "^2.0.0",
     "css-loader": "^6.7.1",
     "eslint": "^8.12.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
     "html-webpack-plugin": "^5.5.0",
+    "msw": "^0.39.2",
     "postcss-loader": "^6.2.1",
+    "read-package-json-fast": "^2.0.3",
     "sass": "^1.49.11",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
