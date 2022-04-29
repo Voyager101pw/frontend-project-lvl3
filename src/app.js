@@ -3,8 +3,7 @@ import i18next from 'i18next';
 import onChange from 'on-change';
 import view from './view.js';
 import resources from './locale/index.js';
-import Validator from './Validator.js';
-import controllerLogic from './asyncLogic/controllerLogic.js';
+import controller from './controller.js';
 
 const elements = { // Для исключения повторного поиска элемента в dom (optimization).
   form: document.getElementById('form'),
@@ -27,14 +26,14 @@ i18next.init({
 });
 
 const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
-const validator = new Validator(state);
 
 const app = () => {
-  elements.form.addEventListener('submit', (e) => { // Controller
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const input = e.target.input.value;
-    controllerLogic(watchedState, validator, input); // async. controller logic
+    const url = e.target.input.value;
+    controller(watchedState, i18next, url);
   });
+  // controller(watchedState, i18next, 'https://ru.hexlet.io/lessons.rss');
 };
 
 export default app;

@@ -5,6 +5,17 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title RSS-агрегатор
   body
+    .modal.fade#modal(tabindex='-1', aria-labelledby='modal-title', aria-hidden='true', role='dialog')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title
+            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+          .modal-body
+            p#modal-content
+          .modal-footer
+            a.btn.btn-primary(type='button', href='#', target='blank') Читать полностью
+            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Закрыть
     main.flex
       section.container-fluid.bg-dark.p-5 
         .row
@@ -21,7 +32,7 @@ html(lang='en')
                   button.btn.btn-primary.btn-lg.px-5.h-100(id='add', type='submit') Добавить
             p.text-muted.mt-2.mb-0 Пример: https://ru.hexlet.io/lessons.rss 
             p.small.mb-0.text-danger.position-absolute#feedback
-      section.container.p-5
+      section.container-fluid.p-5
         div.row
           div.col-md-10.col-lg-8.order-1.mx-auto#posts
           div.col-md-10.col-lg-4.order-0.order-lg-1.mx-auto#feeds
