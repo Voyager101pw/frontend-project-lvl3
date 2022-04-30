@@ -4,6 +4,7 @@ import onChange from 'on-change';
 import view from './view.js';
 import resources from './locale/index.js';
 import controller from './controller.js';
+import document from '../index.html';
 
 const elements = { // Для исключения повторного поиска элемента в dom (optimization).
   form: document.getElementById('form'),
