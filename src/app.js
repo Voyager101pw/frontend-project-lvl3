@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+import 'bootstrap/js/dist/modal.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import i18next from 'i18next';
 import onChange from 'on-change';
 import view from './view.js';
@@ -30,7 +32,7 @@ const watchedState = onChange(state, () => view(state, elements, i18next), { ign
 
 const app = () => {
   console.log(JSON.stringify(document, null, '  '));
-  document.getElementById('form').addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = e.target.input.value;
     controller(watchedState, i18next, url);
