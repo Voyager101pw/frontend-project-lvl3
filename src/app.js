@@ -1,6 +1,4 @@
 /* eslint-disable no-undef */
-import 'bootstrap/js/dist/modal.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import i18next from 'i18next';
 import onChange from 'on-change';
 import view from './view.js';
@@ -9,8 +7,7 @@ import controller from './controller.js';
 
 const elements = { // Для исключения повторного поиска элемента в dom (optimization).
   form: document.getElementById('form'),
-  // input: document.getElementById('input'),
-  input: document.getElementById('url-input'),
+  input: document.getElementById('input'),
   feedback: document.getElementById('feedback'),
 };
 
@@ -31,8 +28,7 @@ i18next.init({
 const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
 
 const app = () => {
-  console.log(JSON.stringify(document, null, '  '));
-  elements.form.addEventListener('submit', (e) => {
+  document.getElementById('form').addEventListener('submit', (e) => {
     e.preventDefault();
     const url = e.target.input.value;
     controller(watchedState, i18next, url);
