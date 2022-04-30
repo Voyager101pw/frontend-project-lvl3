@@ -4,7 +4,6 @@ import onChange from 'on-change';
 import view from './view.js';
 import resources from './locale/index.js';
 import controller from './controller.js';
-import document from '../index.html';
 
 const elements = { // Для исключения повторного поиска элемента в dom (optimization).
   form: document.getElementById('form'),
@@ -29,8 +28,7 @@ i18next.init({
 const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
 
 const app = () => {
-  console.log(JSON.stringify(document, null, '  '));
-  elements.form.addEventListener('submit', (e) => {
+  document.getElementById('form').addEventListener('submit', (e) => {
     e.preventDefault();
     const url = e.target.input.value;
     controller(watchedState, i18next, url);
