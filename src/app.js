@@ -6,8 +6,7 @@ import resources from './locale/index.js';
 import controller from './controller.js';
 
 const elements = { // Для исключения повторного поиска элемента в dom (optimization).
-  form: document.querySelector('form'),
-  // form: document.getElementById('form'),
+  form: document.getElementById('form'),
   input: document.getElementById('input'),
   feedback: document.getElementById('feedback'),
 };
@@ -29,6 +28,7 @@ i18next.init({
 const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
 
 const app = () => {
+  console.log(JSON.stringify(document, null, '  '));
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = e.target.input.value;
