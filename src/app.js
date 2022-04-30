@@ -28,8 +28,7 @@ i18next.init({
 const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
 
 const app = () => {
-  console.log(document.getElementById('form'))
-  elements.form.addEventListener('submit', (e) => {
+  document.getElementById('form').addEventListener('submit', (e) => {
     e.preventDefault();
     const url = e.target.input.value;
     controller(watchedState, i18next, url);
