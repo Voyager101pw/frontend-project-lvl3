@@ -1,23 +1,33 @@
 /* eslint-disable no-undef */
 import i18next from 'i18next';
 import onChange from 'on-change';
-import view from './view.js';
+import render from './render.js';
 import resources from './locale/index.js';
-import controller from './controller.js';
+import view from './view.js';
 
-const elements = { // Для исключения повторного поиска элемента в dom (optimization).
+const elements = {
+  modalRead: document.getElementById('modalRead'),
+  modalClose: document.getElementById('modalClose'),
   form: document.getElementById('form'),
+  title: document.getElementById('title'),
+  subTitle: document.getElementById('subTitle'),
   input: document.getElementById('input'),
+  label: document.getElementById('label'),
+  addBtn: document.getElementById('addBtn'),
+  example: document.getElementById('example'),
   feedback: document.getElementById('feedback'),
+  feedNode: document.getElementById('feeds'),
+  postsNode: document.getElementById('posts'),
 };
 
-// Модель — этот компонент отвечает за данные, а также определяет структуру приложения
-const state = { // state определяет модель
+const state = {
   lng: 'ru',
   feeds: [],
   posts: [],
   urls: [],
   error: null,
+  readonly: false,
+  openPost: null,
 };
 
 i18next.init({
@@ -25,15 +35,11 @@ i18next.init({
   resources,
 });
 
-const watchedState = onChange(state, () => view(state, elements, i18next), { ignoreKeys: ['feeds', 'posts, url'] });
+const watchedState = onChange(state, render(elements, i18next), { ignoreKeys: ['urls'] });
 
 const app = () => {
-  document.getElementById('form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const url = e.target.input.value;
-    controller(watchedState, i18next, url);
-  });
-  // controller(watchedState, i18next, 'https://ru.hexlet.io/lessons.rss');
+  console.log(JSON.stringify(elements, null, '  '))
+  view(watchedState, i18next);
 };
 
 export default app;

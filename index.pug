@@ -14,26 +14,26 @@ html(lang='en')
           .modal-body
             p#modal-content
           .modal-footer
-            a.btn.btn-primary(type='button', href='#', target='blank') Читать полностью
-            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Закрыть
+            a.btn.btn-primary#modalRead(type='button', href='#', target='blank') Читать полностью
+            button.btn.btn-secondary#modalClose(type='button', data-bs-dismiss='modal') Закрыть
     main.flex
       section.container-fluid.bg-dark.p-5 
         .row
           .col-md-10.col-lg-8.mx-auto.text-white
-            h1.mb-0.display-3 RSS агрегатор
-            p.lead Начните читать RSS сегодня! Это легко, это красиво.
+            h1.mb-0.display-3#title RSS агрегатор
+            p.lead#subTitle Начните читать RSS сегодня! Это легко, это красиво.
             form#form.text-body
               .row 
                 .col
                   .form-floating
-                    input#input.form-control(autofocus, required, placeholder='Ссылка RSS')
-                    label(for='input') Ссылка RSS
+                    input#input.form-control(autofocus, required, placeholder='Ссылка RSS', aria-label="url")
+                    label#label(for='input') Ссылка RSS
                 .col-auto
-                  button.btn.btn-primary.btn-lg.px-5.h-100(id='add', type='submit') Добавить
-            p.text-muted.mt-2.mb-0 Пример: https://ru.hexlet.io/lessons.rss 
+                  button.btn.btn-primary.btn-lg.px-5.h-100#addBtn(type='submit', aria-label="add", name="url") Добавить
+            p.text-muted.mt-2.mb-0#example Пример: https://ru.hexlet.io/lessons.rss 
             p.small.mb-0.text-danger.position-absolute#feedback
-      section.container-fluid.p-5
+      section.container-fluid.container-xxl.p-5
         div.row
           div.col-md-10.col-lg-8.order-1.mx-auto#posts
           div.col-md-10.col-lg-4.order-0.order-lg-1.mx-auto#feeds
-    script(type='text/javascript', src='dist/bundle.js') 
+    script(type='text/javascript', src='./dist/bundle.js') 

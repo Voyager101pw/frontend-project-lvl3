@@ -17,9 +17,13 @@ module.exports = {
   ],
 
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    historyApiFallback: true,
+    static: {
+      directory: path.join(path.resolve()),
+    },
+    open: true,
     compress: true,
-    port: 9000,
+    port: 8080,
   },
 
   module: {

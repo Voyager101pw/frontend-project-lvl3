@@ -4,3 +4,5 @@ coverage
 *.log
 *.swp
 .vscode
+__fixtures__
+__tests__
