@@ -16,7 +16,7 @@ const changeLocale = (
   example.textContent = i18next.t('trans.example');
 };
 
-const renderError = (error, { input, feedback }, i18next) => {
+const renderError = (error, { input, feedback, form }, i18next) => {
   if (error) {
     addCls(input, 'is-invalid');
     feedback.classList.replace('text-success', 'text-danger');
@@ -25,7 +25,8 @@ const renderError = (error, { input, feedback }, i18next) => {
     feedback.textContent = i18next.t('success');
     feedback.classList.replace('text-danger', 'text-success');
     input.classList.remove('is-invalid');
-    input.value = '';
+    // input.value = '';
+    form.reset();
   }
   input.focus();
 };

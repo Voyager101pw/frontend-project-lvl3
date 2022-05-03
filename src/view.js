@@ -4,14 +4,21 @@ import axios from 'axios';
 import validator from './validator.js';
 import parser from './parser.js';
 
-const makeRequest = (url) => {
-  try {
-    const uri = encodeURIComponent(url);
-    const proxy = `https://allorigins.hexlet.app/get?disableCache=true&url=${uri}`;
-    return axios.get(proxy).then(({ data }) => data.contents);
-  } catch (e) {
-    throw Error('errors.request');
-  }
+const makeRequest = (url, state) => {
+  console.log('requ: ', url);
+  const uri = encodeURIComponent(url);
+  const proxy = `https://allorigins.hexlet.app/get?disableCache=true&url=${uri}`;
+  // return axios.get(proxy).then(({ data }) => data.contents);
+  state.readonly = true;
+  return axios
+    .get(proxy)
+    .then(({ data }) => {
+      state.readonly = false;
+      return data.contents;
+    })
+    .catch(() => {
+      throw Error('errors.request');
+    });
 };
 
 const updateState = (state, url, parsedData) => {
@@ -63,36 +70,36 @@ const addUlListener = (state) => () => {
 // Сценарий-2: запрос > парс > добав. в стейт новое > возбуждение рендера > сценарий-2 (таймером)
 const observUpdate = (state, url) =>
   Promise.resolve(url)
-    .then(makeRequest)
+    .then((url) => {
+      console.log('Поиск обновлений');
+      return makeRequest(url, state);
+    })
     .then(parser)
     .then((parsedData) => extractUpdatedPosts(state, parsedData))
-    .then(() => {
-      setTimeout(() => observUpdate(state, url), 5000);
-    });
+    .then(setTimeout(() => observUpdate(state, url), 5000));
 
 // Сценарий-1: валид. > запрос > парс > добав.в стейт > возбуждение рендера (view) > сценарий-2
-const view = (state, elems, i18next) => {
-  elems.form.addEventListener('submit', async (e) => {
+const view = (state, elms, i18next) => {
+  elms.form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = e.target.input.value;
-    console.log(url)
-    state.readonly = true;
+
+    const url = elms.input.value;
+    console.log('input:', url);
     validator(state)
       .validate(url)
-      .then(makeRequest)
+      .then((url) => makeRequest(url, state))
       .then(parser)
       .then((parsedData) => updateState(state, url, parsedData)) // render view
       .then(addUlListener(state))
-      .then(() => observUpdate(state, url)) // Переход к Сценарию-2
+      .then(setTimeout(() => observUpdate(state, url), 5000)) // Переход к Сценарию-2
       .catch((e) => {
         state.error = i18next.t(e.message);
       })
       .finally(() => {
-        state.readonly = false;
+        console.log('end input: ', elms.input.value);
       });
   });
 };
 
 export default view;
 // https://lorem-rss.herokuapp.com/feed?length=1&unit=second&interval=4
-
