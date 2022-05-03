@@ -71,12 +71,11 @@ const observUpdate = (state, url) =>
     });
 
 // Сценарий-1: валид. > запрос > парс > добав.в стейт > возбуждение рендера (view) > сценарий-2
-const view = (state, i18next) => {
-  const form = document.getElementById('form');
-  form.addEventListener('submit', (e) => {
-    console.log(JSON.stringify(form, null, '  '));
+const view = (state, elems, i18next) => {
+  elems.form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = e.target.input.value;
+    console.log(url)
     state.readonly = true;
     validator(state)
       .validate(url)

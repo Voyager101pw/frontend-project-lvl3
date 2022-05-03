@@ -4,6 +4,10 @@
   "description": "[![Actions Status](https://github.com/Voyager101pw/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Voyager101pw/frontend-project-lvl3/actions)",
   "private": true,
   "main": "src/app.js",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
