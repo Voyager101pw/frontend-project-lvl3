@@ -5,9 +5,6 @@
   "private": true,
   "main": "src/app.js",
   "type": "module",
-  "jest": {
-    "testEnvironment": "jsdom"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
@@ -40,9 +37,6 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
     "html-webpack-plugin": "^5.5.0",
-    "jest": "^28.0.3",
-    "jest-cli": "^28.0.3",
-    "jest-environment-jsdom": "^28.0.2",
     "msw": "^0.39.2",
     "postcss-loader": "^6.2.1",
     "read-package-json-fast": "^2.0.3",
